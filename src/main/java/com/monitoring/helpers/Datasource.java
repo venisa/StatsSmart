@@ -30,6 +30,7 @@ public class Datasource {
             this.connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
         } catch (SQLException e) {
+            //TODO add logging
             System.out.println("Database Connection Error");
             this.connection = null;
         }
