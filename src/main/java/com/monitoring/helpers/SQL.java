@@ -36,4 +36,14 @@ public class SQL {
         metrics.add(memory);
         return new Statistics(metrics);
     }
+
+    public static Statistics getStatistics() {
+
+        CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0));
+        Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0));
+        List<Metric> metrics = new ArrayList<>();
+        metrics.add(cpu);
+        metrics.add(memory);
+        return new Statistics(metrics);
+    }
 }
