@@ -73,19 +73,6 @@ public class SQLHelper {
         return null;
     }
 
-
-
-
-    public Statistics getStatistics() {
-
-        CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0), "host1");
-        Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0), "host1");
-        List<Metric> metrics = new ArrayList<>();
-        metrics.add(cpu);
-        metrics.add(memory);
-        return new Statistics(metrics);
-    }
-
     public Statistics getSummary() {
 
         String cpuQuery = "SELECT host_name, cpu, AVG(per_usr) AS per_usr, AVG(per_nice) AS per_nice, AVG(per_sys) AS " +
@@ -102,7 +89,6 @@ public class SQLHelper {
         List<Metric> metrics = new ArrayList<>();
 
         metrics.addAll(executeCPUQuery(cpuQuery));
-
         metrics.addAll(executeMemoryQuery(memoryQuery));
 
         return new Statistics(metrics);
@@ -124,6 +110,36 @@ public class SQLHelper {
             statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery(sql);
 
+            cpuMetrics = getCPUMetrics(resultSet);
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //TODO add logging
+        }
+
+        return cpuMetrics;
+    }
+
+    public List<CPU> executeParametrizedCPUQuery(String sql, String hostId) {
+        List<CPU> cpuMetrics = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, hostId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            cpuMetrics = getCPUMetrics(resultSet);
+
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cpuMetrics;
+    }
+
+    public List<CPU> getCPUMetrics(ResultSet resultSet) {
+        List<CPU> cpuMetrics = new ArrayList<>();
+        try {
             while(resultSet.next()) {
                 cpuMetrics.add( new CPU(
                                 new CPUFields(
@@ -140,44 +156,9 @@ public class SQLHelper {
             }
 
             resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             //TODO add logging
-        }
-
-        return cpuMetrics;
-    }
-
-    public List<CPU> executeParametrizedCPUQuery(String sql, String hostId) {
-        List<CPU> cpuMetrics = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, hostId);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while(rs.next()){
-                cpuMetrics.add(
-                        new CPU(
-                                new CPUFields(
-                                        rs.getString("cpu"),
-                                        rs.getDouble("per_usr"),
-                                        rs.getDouble("per_nice"),
-                                        rs.getDouble("per_sys"),
-                                        rs.getDouble("per_io_wait")
-                                ),
-                                rs.getString("host_name")
-                        )
-
-                );
-            }
-
-            rs.close();
-            preparedStatement.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return cpuMetrics;
     }
@@ -189,22 +170,8 @@ public class SQLHelper {
             statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery(sql);
 
-            while(resultSet.next()) {
-                memoryMetrics.add(
-                        new Memory(
-                                new MemoryFields(
-                                        resultSet.getDouble("total"),
-                                        resultSet.getDouble("used"),
-                                        resultSet.getDouble("free")
+            memoryMetrics = getMemoryMetrics(resultSet);
 
-                                ),
-                                resultSet.getString("host_name")
-                        )
-                );
-
-            }
-
-            resultSet.close();
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -222,6 +189,20 @@ public class SQLHelper {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            memoryMetrics = getMemoryMetrics(resultSet);
+
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return memoryMetrics;
+    }
+
+    public List<Memory> getMemoryMetrics(ResultSet resultSet) {
+        List<Memory> memoryMetrics = new ArrayList<>();
+
+        try {
             while(resultSet.next()) {
                 memoryMetrics.add(
                         new Memory(
@@ -236,9 +217,7 @@ public class SQLHelper {
                 );
 
             }
-
             resultSet.close();
-            preparedStatement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
