@@ -6,10 +6,10 @@ CREATE TABLE `StatsSmart`.`host` (
   PRIMARY KEY (`name`),
   UNIQUE KEY `ip_UNIQUE` (`ip`));
 
-CREATE TABLE `StatsSmart`.`cpu` (
+CREATE TABLE `cpu` (
   `dateTime` datetime NOT NULL,
   `host_name` varchar(45) NOT NULL,
-  `per_user` double DEFAULT NULL,
+  `per_usr` double DEFAULT NULL,
   `per_nice` double DEFAULT NULL,
   `per_sys` double DEFAULT NULL,
   `per_io_wait` double DEFAULT NULL,

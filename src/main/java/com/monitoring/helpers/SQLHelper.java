@@ -16,8 +16,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by venisac
  */
@@ -57,23 +55,95 @@ public class SQLHelper {
         return hosts;
     }
 
-    public Statistics getAvgStatistics() {
+    public Statistics getSummary() {
 
-        CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0));
-        Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0));
+        List<Metric> metrics = new ArrayList<>();
+
+        String cpuQuery = "SELECT host_name, cpu, avg(per_usr) as per_usr, avg(per_nice) as per_nice, avg(per_sys) as " +
+                "per_sys, avg(per_io_wait) as per_io_wait from " + CPU_TABLE + " GROUP BY host_name, cpu";
+
+        metrics.addAll(executeCPUQuery(cpuQuery));
+
+        String memoryQuery = "SELECT host_name, AVG(total) as total, AVG(used) as used, AVG(free) as free FROM "
+                + MEMORY_TABLE + " GROUP BY host_name;";
+
+        metrics.addAll(executeMemoryQuery(memoryQuery));
+
+        return new Statistics(metrics);
+    }
+
+    public Statistics getStatistics() {
+
+
+        CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0), "host1");
+        Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0), "host1");
         List<Metric> metrics = new ArrayList<>();
         metrics.add(cpu);
         metrics.add(memory);
         return new Statistics(metrics);
     }
 
-    public Statistics getStatistics() {
+    public List<CPU> executeCPUQuery(String sql) {
+        Statement statement;
+        List<CPU> cpuMetrics = new ArrayList<>();
+        try {
+            statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
 
-        CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0));
-        Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0));
-        List<Metric> metrics = new ArrayList<>();
-        metrics.add(cpu);
-        metrics.add(memory);
-        return new Statistics(metrics);
+            while(resultSet.next()) {
+                cpuMetrics.add( new CPU(
+                                new CPUFields(
+                                        resultSet.getString("cpu"),
+                                        resultSet.getDouble("per_usr"),
+                                        resultSet.getDouble("per_nice"),
+                                        resultSet.getDouble("per_sys"),
+                                        resultSet.getDouble("per_io_wait")
+                                ),
+                                resultSet.getString("host_name")
+                        )
+                );
+
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //TODO add logging
+        }
+
+        return cpuMetrics;
+    }
+
+    public List<Memory> executeMemoryQuery(String sql) {
+        Statement statement;
+        List<Memory> memoryMetrics = new ArrayList<>();
+        try {
+            statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while(resultSet.next()) {
+                memoryMetrics.add(
+                        new Memory(
+                                new MemoryFields(
+                                        resultSet.getDouble("total"),
+                                        resultSet.getDouble("used"),
+                                        resultSet.getDouble("free")
+
+                                ),
+                                resultSet.getString("host_name")
+                        )
+                );
+
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //TODO add logging
+        }
+
+        return memoryMetrics;
     }
 }

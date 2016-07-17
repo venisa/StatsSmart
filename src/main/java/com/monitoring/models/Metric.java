@@ -9,9 +9,16 @@ public abstract class Metric {
     private final String name;
     private final Object fields;
 
-    public Metric(String name, Object fields) {
+    public String getHost() {
+        return host;
+    }
+
+    private final String host;
+
+    public Metric(String name, Object fields, String host) {
         this.name = name;
         this.fields = fields;
+        this.host = host;
     }
 
     @JsonProperty(value = "metric")
@@ -22,4 +29,5 @@ public abstract class Metric {
     public Object getFields() {
         return fields;
     }
+
 }

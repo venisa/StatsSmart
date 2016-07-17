@@ -6,42 +6,42 @@ package com.monitoring.models;
 public class CPUFields {
 
     private final String cpu;
-    private final double perUsr;
-    private final double perNice;
-    private final double perSys;
-    private final double perIoWait;
+    private final double per_usr;
+    private final double per_nice;
+    private final double per_sys;
+    private final double per_io_wait;
 
     public CPUFields(
             String cpu,
-            double perUsr,
-            double perNice,
-            double perSys,
-            double perIoWait
+            double per_usr,
+            double per_nice,
+            double per_sys,
+            double per_io_wait
     ) {
         this.cpu = cpu;
-        this.perUsr = perUsr;
-        this.perNice = perNice;
-        this.perSys = perSys;
-        this.perIoWait = perIoWait;
+        this.per_usr = per_usr;
+        this.per_nice = per_nice;
+        this.per_sys = per_sys;
+        this.per_io_wait = per_io_wait;
     }
 
     public String getCpu() {
         return cpu;
     }
 
-    public double getPerUsr() {
-        return perUsr;
+    public double getPer_usr() {
+        return per_usr;
     }
 
-    public double getPerNice() {
-        return perNice;
+    public double getPer_nice() {
+        return per_nice;
     }
 
-    public double getPerSys() {
-        return perSys;
+    public double getPer_sys() {
+        return per_sys;
     }
 
-    public double getPerIoWait() {
-        return perIoWait;
+    public double getPer_io_wait() {
+        return per_io_wait;
     }
 }
