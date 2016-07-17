@@ -10,6 +10,7 @@ import com.monitoring.models.Metric;
 import com.monitoring.models.Statistics;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -55,31 +56,64 @@ public class SQLHelper {
         return hosts;
     }
 
-    public Statistics getSummary() {
 
-        List<Metric> metrics = new ArrayList<>();
+    public Statistics getAverage(String hostId) {
 
-        String cpuQuery = "SELECT host_name, cpu, avg(per_usr) as per_usr, avg(per_nice) as per_nice, avg(per_sys) as " +
-                "per_sys, avg(per_io_wait) as per_io_wait from " + CPU_TABLE + " GROUP BY host_name, cpu";
+        String cpuQuery = "SELECT host_name, cpu, AVG(per_usr) AS per_usr, AVG(per_nice) AS per_nice, AVG(per_sys) " +
+                "AS per_sys, AVG(per_io_wait) AS per_io_wait FROM " + CPU_TABLE + " GROUP BY host_name, cpu HAVING host_name=?";
 
-        metrics.addAll(executeCPUQuery(cpuQuery));
+        String memoryQuery = "SELECT host_name, AVG(total) AS total, AVG(used) AS used, AVG(free) AS free " +
+                "FROM " + MEMORY_TABLE + " GROUP BY host_name HAVING HOST_NAME=?";
 
-        String memoryQuery = "SELECT host_name, AVG(total) as total, AVG(used) as used, AVG(free) as free FROM "
-                + MEMORY_TABLE + " GROUP BY host_name;";
-
-        metrics.addAll(executeMemoryQuery(memoryQuery));
-
-        return new Statistics(metrics);
+        return getStatistics(cpuQuery, memoryQuery, hostId);
     }
 
-    public Statistics getStatistics() {
+    public Statistics getLatest() {
 
+        return null;
+    }
+
+
+
+
+    public Statistics getStatistics() {
 
         CPU cpu = new CPU(new CPUFields("all", 2.0, 2.0, 2.0, 2.0), "host1");
         Memory memory = new Memory(new MemoryFields(2.0, 2.0, 2.0), "host1");
         List<Metric> metrics = new ArrayList<>();
         metrics.add(cpu);
         metrics.add(memory);
+        return new Statistics(metrics);
+    }
+
+    public Statistics getSummary() {
+
+        String cpuQuery = "SELECT host_name, cpu, AVG(per_usr) AS per_usr, AVG(per_nice) AS per_nice, AVG(per_sys) AS " +
+                "per_sys, AVG(per_io_wait) AS per_io_wait FROM " + CPU_TABLE + " GROUP BY host_name, cpu";
+
+        String memoryQuery = "SELECT host_name, AVG(total) AS total, AVG(used) AS used, AVG(free) AS free FROM "
+                + MEMORY_TABLE + " GROUP BY host_name;";
+
+        return getStatistics(cpuQuery, memoryQuery);
+    }
+
+
+    public Statistics getStatistics(String cpuQuery, String memoryQuery) {
+        List<Metric> metrics = new ArrayList<>();
+
+        metrics.addAll(executeCPUQuery(cpuQuery));
+
+        metrics.addAll(executeMemoryQuery(memoryQuery));
+
+        return new Statistics(metrics);
+    }
+
+    public Statistics getStatistics(String cpuQuery, String memoryQuery, String hostId) {
+        List<Metric> metrics = new ArrayList<>();
+
+        metrics.addAll(executeParametrizedCPUQuery(cpuQuery, hostId));
+        metrics.addAll(executeParametrizedMemoryQuery(memoryQuery, hostId));
+
         return new Statistics(metrics);
     }
 
@@ -115,6 +149,39 @@ public class SQLHelper {
         return cpuMetrics;
     }
 
+    public List<CPU> executeParametrizedCPUQuery(String sql, String hostId) {
+        List<CPU> cpuMetrics = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, hostId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while(rs.next()){
+                cpuMetrics.add(
+                        new CPU(
+                                new CPUFields(
+                                        rs.getString("cpu"),
+                                        rs.getDouble("per_usr"),
+                                        rs.getDouble("per_nice"),
+                                        rs.getDouble("per_sys"),
+                                        rs.getDouble("per_io_wait")
+                                ),
+                                rs.getString("host_name")
+                        )
+
+                );
+            }
+
+            rs.close();
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cpuMetrics;
+    }
+
     public List<Memory> executeMemoryQuery(String sql) {
         Statement statement;
         List<Memory> memoryMetrics = new ArrayList<>();
@@ -144,6 +211,38 @@ public class SQLHelper {
             //TODO add logging
         }
 
+        return memoryMetrics;
+    }
+
+    public List<Memory> executeParametrizedMemoryQuery(String sql, String hostId) {
+        List<Memory> memoryMetrics = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, hostId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                memoryMetrics.add(
+                        new Memory(
+                                new MemoryFields(
+                                        resultSet.getDouble("total"),
+                                        resultSet.getDouble("used"),
+                                        resultSet.getDouble("free")
+
+                                ),
+                                resultSet.getString("host_name")
+                        )
+                );
+
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return memoryMetrics;
     }
 }

@@ -36,14 +36,14 @@ public class HostServlet {
     @Path("{hostId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSummary(@PathParam("hostId") String hostId) {
-        return ResponseUtils.getResponse(SQLHelper.getSummary());
+        return ResponseUtils.getResponse(SQLHelper.getAverage(hostId));
     }
 
     @GET
     @Path("{hostId}/latest")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatistics(@PathParam("hostId") String hostId) {
-        return ResponseUtils.getResponse(SQLHelper.getStatistics());
+        return ResponseUtils.getResponse(SQLHelper.getAverage(hostId));
     }
 
 }
