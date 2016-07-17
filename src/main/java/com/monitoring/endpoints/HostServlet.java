@@ -43,7 +43,7 @@ public class HostServlet {
     @Path("{hostId}/latest")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatistics(@PathParam("hostId") String hostId) {
-        return ResponseUtils.getResponse(SQLHelper.getAverage(hostId));
+        return ResponseUtils.getResponse(SQLHelper.getLatest(hostId));
     }
 
 }

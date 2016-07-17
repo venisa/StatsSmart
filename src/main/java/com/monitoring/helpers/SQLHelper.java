@@ -56,7 +56,6 @@ public class SQLHelper {
         return hosts;
     }
 
-
     public Statistics getAverage(String hostId) {
 
         String cpuQuery = "SELECT host_name, cpu, AVG(per_usr) AS per_usr, AVG(per_nice) AS per_nice, AVG(per_sys) " +
@@ -68,9 +67,14 @@ public class SQLHelper {
         return getStatistics(cpuQuery, memoryQuery, hostId);
     }
 
-    public Statistics getLatest() {
+    public Statistics getLatest(String hostId) {
 
-        return null;
+        String memoryQuery = "SELECT total, used, free, host_name FROM " + MEMORY_TABLE + " WHERE host_name=? ORDER BY dateTime desc LIMIT 1;";
+
+        String cpuQuery = "SELECT host_name, cpu, per_usr, per_nice, per_sys, per_io_wait FROM " + CPU_TABLE + " WHERE " +
+                "host_name =? ORDER BY dateTime desc LIMIT 1;";
+
+        return getStatistics(cpuQuery, memoryQuery, hostId);
     }
 
     public Statistics getSummary() {
@@ -103,6 +107,7 @@ public class SQLHelper {
         return new Statistics(metrics);
     }
 
+    //TODO refactor
     public List<CPU> executeCPUQuery(String sql) {
         Statement statement;
         List<CPU> cpuMetrics = new ArrayList<>();
@@ -119,6 +124,26 @@ public class SQLHelper {
 
         return cpuMetrics;
     }
+
+    /*
+    public ResultSet executeQuery(String sql) {
+
+        ResultSet resultSet = null;
+
+        try {
+            Statement statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery(sql);
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("the query was not executed successfully");
+            //TODO add logging
+        }
+
+        return resultSet;
+    }
+    */
 
     public List<CPU> executeParametrizedCPUQuery(String sql, String hostId) {
         List<CPU> cpuMetrics = new ArrayList<>();
@@ -158,6 +183,7 @@ public class SQLHelper {
             resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("resultset is null");
             //TODO add logging
         }
         return cpuMetrics;
