@@ -101,8 +101,8 @@ public class SQLHelper {
     public Statistics getStatistics(String cpuQuery, String memoryQuery, String hostId) {
         List<Metric> metrics = new ArrayList<>();
 
-        metrics.addAll(executeParametrizedCPUQuery(cpuQuery, hostId));
-        metrics.addAll(executeParametrizedMemoryQuery(memoryQuery, hostId));
+        metrics.addAll(executeCPUQuery(cpuQuery, hostId));
+        metrics.addAll(executeMemoryQuery(memoryQuery, hostId));
 
         return new Statistics(metrics);
     }
@@ -145,7 +145,7 @@ public class SQLHelper {
     }
     */
 
-    public List<CPU> executeParametrizedCPUQuery(String sql, String hostId) {
+    public List<CPU> executeCPUQuery(String sql, String hostId) {
         List<CPU> cpuMetrics = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -207,7 +207,7 @@ public class SQLHelper {
         return memoryMetrics;
     }
 
-    public List<Memory> executeParametrizedMemoryQuery(String sql, String hostId) {
+    public List<Memory> executeMemoryQuery(String sql, String hostId) {
         List<Memory> memoryMetrics = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);

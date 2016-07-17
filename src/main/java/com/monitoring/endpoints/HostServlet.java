@@ -46,4 +46,6 @@ public class HostServlet {
         return ResponseUtils.getResponse(SQLHelper.getLatest(hostId));
     }
 
+    //TODO implement point in time statistics
+
 }
