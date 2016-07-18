@@ -3,16 +3,11 @@ package com.monitoring.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by venisac
+ * Abstract class for a metric. Any new metric should obey the contract specified by Metric
  */
 public abstract class Metric {
     private final String name;
     private final Object fields;
-
-    public String getHost() {
-        return host;
-    }
-
     private final String host;
 
     public Metric(String name, Object fields, String host) {
@@ -28,6 +23,10 @@ public abstract class Metric {
 
     public Object getFields() {
         return fields;
+    }
+
+    public String getHost() {
+        return host;
     }
 
 }

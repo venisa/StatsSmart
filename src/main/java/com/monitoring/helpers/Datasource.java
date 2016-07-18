@@ -6,9 +6,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 /**
- * Created by venisac
+ * Datasource contains all the information needed to get a database connection
  */
 public class Datasource {
 

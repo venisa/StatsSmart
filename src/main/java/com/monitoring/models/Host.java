@@ -1,7 +1,7 @@
 package com.monitoring.models;
 
 /**
- * Created by venisac
+ * POJO for host
  */
 public class Host {
 

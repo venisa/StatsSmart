@@ -8,7 +8,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import javax.inject.Singleton;
 
 /**
- * Created by venisac
+ * The Resource Configuration for StatsSmart webservice
  */
 public class ApplicationResourceConfig extends ResourceConfig {
 

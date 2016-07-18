@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by venisac
+ * Class containing methods to execute SQL queries to collect performance metrics from the database.
  */
 public class SQLHelper {
 
@@ -124,26 +124,6 @@ public class SQLHelper {
 
         return cpuMetrics;
     }
-
-    /*
-    public ResultSet executeQuery(String sql) {
-
-        ResultSet resultSet = null;
-
-        try {
-            Statement statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery(sql);
-
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("the query was not executed successfully");
-            //TODO add logging
-        }
-
-        return resultSet;
-    }
-    */
 
     public List<CPU> executeCPUQuery(String sql, String hostId) {
         List<CPU> cpuMetrics = new ArrayList<>();

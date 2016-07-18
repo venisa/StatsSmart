@@ -9,7 +9,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
- * Hello world!
+ * The main class that starts the Jetty Server
  *
  */
 public class App
