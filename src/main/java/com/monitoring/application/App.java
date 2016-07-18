@@ -8,10 +8,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-/**
- * Hello world!
- *
- */
 public class App
 {
     private static final String CONFIG_PACKAGE = "com.monitoring";
