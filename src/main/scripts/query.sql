@@ -1,6 +1,6 @@
-CREATE DATABASE StatsSmart;
+CREATE DATABASE statsmart;
 
-CREATE TABLE `StatsSmart`.`host` (
+CREATE TABLE statsmart.`host` (
   `ip` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`name`),

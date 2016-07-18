@@ -1,7 +1,7 @@
 package com.monitoring.models;
 
 /**
- * Created by venisac
+ * POJO for all the information collected about memory of a host
  */
 public class MemoryFields {
 

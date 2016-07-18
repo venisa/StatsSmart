@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * Created by venisac
+ * Statistics represents the JSON object returned to the user.
  */
 public class Statistics {
 

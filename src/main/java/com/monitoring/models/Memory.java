@@ -1,7 +1,7 @@
 package com.monitoring.models;
 
 /**
- * Created by venisac
+ * POJO for Memory metric
  */
 public class Memory extends Metric {
 

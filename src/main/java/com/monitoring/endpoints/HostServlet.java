@@ -13,7 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by venisac
+ * Host Servlet responds to the host endpoint which allows user to query information about all the hosts in the system
+ * and to get performance metrics of a particular host
  */
 @Path("/hosts")
 public class HostServlet {
@@ -27,6 +28,10 @@ public class HostServlet {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    /**
+     * This method corresponds to the '/hosts' endpoint. It returns a Json containing ip address and host name of all
+     * hosts in the system.
+     */
     public Response getHosts() {
 
         return ResponseUtils.getResponse(SQLHelper.getHosts());
@@ -35,13 +40,20 @@ public class HostServlet {
     @GET
     @Path("{hostId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSummary(@PathParam("hostId") String hostId) {
+    /**
+     * This method corresponds to the '/hosts/{hostId}' endpoint. It gives a summary of the performance of all the hosts in the
+     * system.
+     */
+    public Response getAverage(@PathParam("hostId") String hostId) {
         return ResponseUtils.getResponse(SQLHelper.getAverage(hostId));
     }
 
     @GET
     @Path("{hostId}/latest")
     @Produces(MediaType.APPLICATION_JSON)
+    /**
+     * This method corresponds to the '/hosts/{hostId}/latest endpoint. It gives the latest performance metrics of a particular host.
+     */
     public Response getStatistics(@PathParam("hostId") String hostId) {
         return ResponseUtils.getResponse(SQLHelper.getLatest(hostId));
     }

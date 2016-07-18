@@ -12,7 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by venisac
+ * Host Servlet responds to the Summary endpoint which allows user to get a summary of the performance of all the hosts
+ * in the system
  */
 @Path("/summary")
 public class SummaryServlet {

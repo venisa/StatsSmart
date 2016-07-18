@@ -1,7 +1,7 @@
 package com.monitoring.models;
 
 /**
- * Created by venisac
+ * POJO for CPU metric
  */
 public class CPU extends Metric {
 
