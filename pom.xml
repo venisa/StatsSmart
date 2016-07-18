@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.monitoring</groupId>
-  <artifactId>stats_smart</artifactId>
+  <artifactId>StatsSmart</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>stats_smart</name>
+  <name>StatsSmart</name>
   <url>http://maven.apache.org</url>
 
   <properties>
