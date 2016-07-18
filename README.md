@@ -13,7 +13,7 @@ The StatsSmart API has two end points. The 'summary' endpoint gives average of t
 The StatsSmart API is powered by a Jetty server and connects to a centralized MYSQL database to collect performance metrics.
 
 ### MetricLoader ###
-The MetricLoader provides a service that runs every hour on the host whose performance needs to be monitored. It collects the CPU and Memory informations and stores it the MYSQL database
+The MetricLoader provides a service that runs every hour on the host whose performance needs to be monitored. It collects the CPU and Memory informations and stores it in the MYSQL database
 
 ## Configuration ##
 
