@@ -7,7 +7,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.net.URL;
 
-//TODO refactor
 //TODO add unit tests
 /**
  * Class to hold and fetch system configuration values.
