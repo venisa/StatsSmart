@@ -1,4 +1,4 @@
-package com.monitoring.Config
+package com.monitoring.config
 
 import com.monitoring.config.SystemConfig
 
